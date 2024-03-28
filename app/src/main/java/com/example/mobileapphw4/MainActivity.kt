@@ -34,9 +34,8 @@ class MainActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
                     Toast.makeText(this@MainActivity, "$response", Toast.LENGTH_SHORT).show()
                     Log.d(TAG, "onResponse: $response")
-                    if (response.body() != null) {
-                        Log.d(TAG, "Name ${response.body()!!._embedded.events.get(0).url}")
-                    }
+                    Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
+
 
                 }
 

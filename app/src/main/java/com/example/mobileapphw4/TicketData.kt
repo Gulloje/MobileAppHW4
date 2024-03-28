@@ -37,7 +37,6 @@ data class EmbeddedVenue(
 
 data class VenueData(
     val name: String,
-    //might use postal code here instead
     val city: City,
     val state: State,
     val address: Address
