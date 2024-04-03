@@ -8,5 +8,6 @@ interface EventDataService {
 
     @GET("discovery/v2/events.json")
     fun getEventNameByCity(@Query("city") city: String,
+                           @Query("keyword") keyword: String,
                            @Query("apikey") apiKey: String): Call<TicketData>
 }

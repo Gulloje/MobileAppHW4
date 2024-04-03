@@ -1,11 +1,14 @@
 package com.example.mobileapphw4
 
+import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +25,13 @@ class MainActivity : AppCompatActivity() {
 
 
 
+        var eventList = ArrayList<EventData>()
+        val adapter = RecyclerAdapter(eventList);
+        val recyclerView = findViewById<RecyclerView>(R.id.recycleView);
+        recyclerView.adapter = adapter
+        //recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        //recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -30,19 +40,40 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnSearch).setOnClickListener {
             val cityName = findViewById<EditText>(R.id.textCity).text.toString()
-            eventAPI.getEventNameByCity(cityName, apiKey).enqueue(object : Callback<TicketData?> {
-                override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
-                    Toast.makeText(this@MainActivity, "$response", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "onResponse: $response")
-                    Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
+            val keyword = findViewById<EditText>(R.id.textKeyword).text.toString()
+            if (keyword =="" || cityName == "") {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("My Dialog")
+                builder.setMessage("Welcome to my app!")
+
+                // create the dialog and show it
+                val dialog = builder.create()
+                dialog.show()
+            } else {
+                eventList.clear(); //if you hit the button a second time, clear the list
+                eventAPI.getEventNameByCity(cityName, keyword, apiKey).enqueue(object : Callback<TicketData?> {
+                    override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
+                        Toast.makeText(this@MainActivity, "$response", Toast.LENGTH_SHORT).show()
+                        Log.d(TAG, "onResponse: $response")
+                        Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
+                        Log.d(TAG, "Body: ${response.body()}")
+                        if (response.body() == null) {
+                            Toast.makeText(this@MainActivity, "No Events Found", Toast.LENGTH_SHORT).show()
+                        } else {
+                            eventList.addAll(response.body()!!._embedded.events)
+                        }
+                        adapter.notifyDataSetChanged()
 
 
-                }
 
-                override fun onFailure(call: Call<TicketData?>, t: Throwable) {
-                    Log.d(TAG, "onFailure: $t")
-                }
-            })
+                    }
+
+                    override fun onFailure(call: Call<TicketData?>, t: Throwable) {
+                        Log.d(TAG, "onFailure: $t")
+                    }
+                })
+            }
+
         }
     }
 
