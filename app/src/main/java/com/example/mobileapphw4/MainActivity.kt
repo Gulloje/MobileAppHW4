@@ -39,7 +39,8 @@ class MainActivity : AppCompatActivity() {
             createDialog("Something is missing!", "Fill out all fields")
         } else {
             eventList.clear(); //if you hit the button a second time, clear the list
-            eventAPI.getEventNameByCity(cityName, keyword, apiKey).enqueue(object : Callback<TicketData?> {
+            //COMEBACK TO FIGURE OUT PAGING
+            eventAPI.getEventNameByCity(cityName, keyword,0.toString(), apiKey).enqueue(object : Callback<TicketData?> {
                 override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
                     if (response.body()?._embedded == null) {
                         Toast.makeText(this@MainActivity, "No Events Found", Toast.LENGTH_SHORT).show()

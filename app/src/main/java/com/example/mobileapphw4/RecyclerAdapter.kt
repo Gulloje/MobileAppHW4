@@ -49,8 +49,13 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
         holder.address.text = "${curItem._embedded.venues[0].address.line1}, " +
                 "${curItem._embedded.venues[0].city.name}, ${curItem._embedded.venues[0].state.stateCode}"
 
+        //wanted to get rid of .0 and .5 and handle null
+        try {
+            holder.priceRange.text = "Price Range: $${ceil(curItem.priceRanges[0].min).toInt()} - $${ceil(curItem.priceRanges[0].max).toInt()}"
+        } catch(e: Exception) {
+            holder.priceRange.text = "PriceRange: N/A"
+        }
 
-        holder.priceRange.text = "Price Range: $${floor(curItem.priceRanges[0].min).toInt()} - $${ceil(curItem.priceRanges[0].max).toInt()}"
 
     }
 
