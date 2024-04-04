@@ -36,6 +36,7 @@
         tools:itemCount="100"
         tools:listitem="@layout/row_item" />
 
+
     <EditText
         android:id="@+id/textCity"
         android:layout_width="0dp"
