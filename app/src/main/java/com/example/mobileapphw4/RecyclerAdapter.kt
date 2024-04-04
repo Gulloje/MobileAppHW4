@@ -8,6 +8,8 @@ import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.ceil
+import kotlin.math.floor
 
 class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>()
 {
@@ -31,16 +33,27 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
         val curItem = eventList[position]
         holder.eventName.text = "${curItem.name}"
 
+        //date  https://www.datetimeformatter.com/how-to-format-date-time-in-kotlin/
         var stringDate = curItem.dates.start.localDate
         var date = SimpleDateFormat("yyyy-MM-dd").parse(stringDate)
         stringDate = SimpleDateFormat("MM/dd/yyyy").format(date)
-        holder.date.text = "$stringDate"
 
+        //time
+        var time24 = curItem.dates.start.localTime
+        var time12 = SimpleDateFormat("H:mm:ss").parse(time24)
+        var realTime = SimpleDateFormat("h:mm a").format(time12)
+        holder.date.text = "$stringDate at $realTime"
+
+        //address
         holder.eventLocation.text = "${curItem._embedded.venues[0].name}"
-        holder.address.text = "${curItem._embedded.venues[0].address}" //have to concatenate this mess with res of data
-        holder.priceRange.text = "${curItem.priceRanges}"
+        holder.address.text = "${curItem._embedded.venues[0].address.line1}, " +
+                "${curItem._embedded.venues[0].city.name}, ${curItem._embedded.venues[0].state.stateCode}"
+
+
+        holder.priceRange.text = "Price Range: $${floor(curItem.priceRanges[0].min).toInt()} - $${ceil(curItem.priceRanges[0].max).toInt()}"
 
     }
+
     override fun getItemCount(): Int {
         return eventList.size
     }
