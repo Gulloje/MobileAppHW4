@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.ceil
@@ -23,6 +25,7 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
         val address = itemView.findViewById<TextView>(R.id.textAddress)
         val date = itemView.findViewById<TextView>(R.id.textDate)
         val priceRange = itemView.findViewById<TextView>(R.id.textPriceRange)
+        val image = itemView.findViewById<ImageView>(R.id.imageView)
         val btnSeeMore = itemView.findViewById<Button>(R.id.btnSeeMore)
 
         //still have to do image
@@ -32,7 +35,7 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
         //val view = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false);
         //return ViewHolder(view);
         val itemView = when (viewType) {
-            //if the item is a row, give the row_item xml, else the button
+            //if the item is a row, give the row_item xml, else its the button
             R.layout.row_item -> LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
             else -> LayoutInflater.from(parent.context).inflate(R.layout.see_more_btn, parent, false)
         }
@@ -43,12 +46,10 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: $position")
-        if(position == eventList.size && eventList.size > 1) {
+        //if(position == eventList.size && eventList.size > 0) {
+        if(position == eventList.size && eventList.size > 0) {
             holder.btnSeeMore.visibility = View.VISIBLE
-            holder.btnSeeMore.setOnClickListener{
-                Log.d(TAG, "onBindViewHolder: HIT THE SEE MORE BUTTON")
-            }
-        } else if (eventList.size != 0){ //need to bind the button, but dont want this to do anything if no events
+        } else if (eventList.size > 0){
             val curItem = eventList[position]
             holder.eventName.text = "${curItem.name}"
 
@@ -58,10 +59,15 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
             stringDate = SimpleDateFormat("MM/dd/yyyy").format(date)
 
             //time
-            var time24 = curItem.dates.start.localTime
-            var time12 = SimpleDateFormat("H:mm:ss").parse(time24)
-            var realTime = SimpleDateFormat("h:mm a").format(time12)
-            holder.date.text = "$stringDate at $realTime"
+            try {
+                var time24 = curItem.dates.start.localTime
+                var time12 = SimpleDateFormat("H:mm:ss").parse(time24)
+                var realTime = SimpleDateFormat("h:mm a").format(time12)
+                holder.date.text = "$stringDate at $realTime"
+            } catch (e: Exception) {
+                holder.date.text = "Date: N/A"
+            }
+
 
             //address
             holder.eventLocation.text = "${curItem._embedded.venues[0].name}"
@@ -74,6 +80,15 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
             } catch(e: Exception) {
                 holder.priceRange.text = "PriceRange: N/A"
             }
+
+            val highestQualityImage = curItem.images.maxByOrNull {
+                it.width.toInt() * it.height.toInt()
+
+            }
+
+            val context = holder.itemView.context
+            Glide.with(context).load(highestQualityImage?.url).into(holder.image)
+
         }
 
 

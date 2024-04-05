@@ -1,12 +1,15 @@
 package com.example.mobileapphw4
 
 import android.app.AlertDialog
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerAdapter
     private  val eventList = ArrayList<EventData>()
+    private val eventAPI = initRetrofit().create(EventDataService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,24 +34,37 @@ class MainActivity : AppCompatActivity() {
 
         initRecyclerView()
     }
+    private var seeMoreCounter = 0;
     //tied to search button
     fun search(view: View) {
-        val eventAPI = initRetrofit().create(EventDataService::class.java)
+        eventList.clear()
+        seeMoreCounter = 0
+        loadTickets()
+        view.hideKeyboard()
+    }
+    fun seeMore(view:View) {
+        seeMoreCounter++
+        loadTickets()
+
+    }
+    private fun loadTickets() {
+
         val cityName = findViewById<EditText>(R.id.textCity).text.toString()
         val keyword = findViewById<EditText>(R.id.textKeyword).text.toString()
         if (keyword =="" || cityName == "") { //COMEBACK
             createDialog("Something is missing!", "Fill out all fields")
         } else {
-            eventList.clear(); //if you hit the button a second time, clear the list
             //COMEBACK TO FIGURE OUT PAGING
-            eventAPI.getEventNameByCity(cityName, keyword,0.toString(), apiKey).enqueue(object : Callback<TicketData?> {
+            eventAPI.getEventNameByCity(cityName, keyword, seeMoreCounter.toString(), apiKey).enqueue(object : Callback<TicketData?> {
                 override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
                     if (response.body()?._embedded == null) {
                         Toast.makeText(this@MainActivity, "No Events Found", Toast.LENGTH_SHORT).show()
+
                     } else {
                         Log.d(TAG, "onResponse: ${response.body()}")
                         Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
                         Log.d(TAG, "Body: ${response.body()}")
+
                         eventList.addAll(response.body()!!._embedded.events)
                     }
                     adapter.notifyDataSetChanged()
@@ -59,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+
     }
     private fun createDialog(title: String, message: String ) {
         val builder = AlertDialog.Builder(this)
@@ -80,6 +98,13 @@ class MainActivity : AppCompatActivity() {
             .build()
         return retrofit
     }
+
+    private fun View.hideKeyboard() {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+
 
 
 

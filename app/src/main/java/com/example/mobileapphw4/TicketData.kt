@@ -56,3 +56,4 @@ data class PriceRangeData(
     val max: Double,
     val currency: String
 )
+
