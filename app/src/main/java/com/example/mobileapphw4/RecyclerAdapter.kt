@@ -1,5 +1,8 @@
 package com.example.mobileapphw4
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.view.menu.MenuView.ItemView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
@@ -16,7 +20,7 @@ import java.util.Date
 import kotlin.math.ceil
 import kotlin.math.floor
 
-class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>()
+class RecyclerAdapter(private val context: Context, private val eventList: ArrayList<EventData>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>()
 {
     val TAG = "Recycler Adapter"
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -27,13 +31,10 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
         val priceRange = itemView.findViewById<TextView>(R.id.textPriceRange)
         val image = itemView.findViewById<ImageView>(R.id.imageView)
         val btnSeeMore = itemView.findViewById<Button>(R.id.btnSeeMore)
-
-        //still have to do image
+        val btnSeeTickets = itemView.findViewById<Button>(R.id.btnSeeTickets)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        //val view = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false);
-        //return ViewHolder(view);
         val itemView = when (viewType) {
             //if the item is a row, give the row_item xml, else its the button
             R.layout.row_item -> LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
@@ -47,8 +48,16 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: $position")
         //if(position == eventList.size && eventList.size > 0) {
-        if(position == eventList.size && eventList.size > 0) {
-            holder.btnSeeMore.visibility = View.VISIBLE
+
+        //if(position == eventList.size && eventList.size > 0) {
+            //holder.btnSeeMore.visibility = View.VISIBLE
+        if (position == eventList.size) {
+            // This is the "See more" button item
+            if (eventList.size % 20 == 0 && eventList.size != 0) {
+                holder.btnSeeMore.visibility = View.VISIBLE
+            } else {
+                holder.btnSeeMore.visibility = View.GONE
+            }
         } else if (eventList.size > 0){
             val curItem = eventList[position]
             holder.eventName.text = "${curItem.name}"
@@ -85,11 +94,15 @@ class RecyclerAdapter(private val eventList: ArrayList<EventData>): RecyclerView
                 it.width.toInt() * it.height.toInt()
 
             }
-
             val context = holder.itemView.context
             Glide.with(context).load(highestQualityImage?.url).into(holder.image)
-
+            holder.btnSeeTickets.setOnClickListener {
+                val browserIntent = Intent(Intent.ACTION_VIEW)
+                browserIntent.data = Uri.parse(eventList[position].url)
+                context.startActivity( browserIntent)
+            }
         }
+
 
 
 

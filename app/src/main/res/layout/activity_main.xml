@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E9E9E9"
     tools:context=".MainActivity">
 
     <EditText
@@ -16,6 +17,7 @@
         android:hint="Event Type or Keyword"
         android:inputType="text"
         android:minHeight="48dp"
+        android:textColorHint="#717171"
         app:layout_constraintBottom_toTopOf="@+id/btnSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -46,6 +48,7 @@
         android:hint="City"
         android:inputType="text"
         android:minHeight="48dp"
+        android:textColorHint="#717171"
         app:layout_constraintBottom_toTopOf="@+id/recycleView"
         app:layout_constraintEnd_toStartOf="@+id/btnSearch"
         app:layout_constraintStart_toStartOf="parent"

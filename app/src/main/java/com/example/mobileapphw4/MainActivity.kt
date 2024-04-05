@@ -51,8 +51,10 @@ class MainActivity : AppCompatActivity() {
 
         val cityName = findViewById<EditText>(R.id.textCity).text.toString()
         val keyword = findViewById<EditText>(R.id.textKeyword).text.toString()
-        if (keyword =="" || cityName == "") { //COMEBACK
-            createDialog("Something is missing!", "Fill out all fields")
+        if (keyword =="") {
+            createDialog("Missing Keyword", "Enter a keyword to search for.")
+        } else if (cityName =="") {
+            createDialog("Missing City Name", "Please enter a city.")
         } else {
             //COMEBACK TO FIGURE OUT PAGING
             eventAPI.getEventNameByCity(cityName, keyword, seeMoreCounter.toString(), apiKey).enqueue(object : Callback<TicketData?> {
@@ -64,7 +66,6 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "onResponse: ${response.body()}")
                         Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
                         Log.d(TAG, "Body: ${response.body()}")
-
                         eventList.addAll(response.body()!!._embedded.events)
                     }
                     adapter.notifyDataSetChanged()
@@ -87,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initRecyclerView() {
         recyclerView = findViewById(R.id.recycleView)
-        adapter = RecyclerAdapter(eventList);
+        adapter = RecyclerAdapter(this, eventList);
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         //recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
