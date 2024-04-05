@@ -38,6 +38,21 @@
         tools:itemCount="20"
         tools:listitem="@layout/row_item" />
 
+    <TextView
+        android:id="@+id/noResultsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="No results found"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/recycleView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textKeyword" />
+
+
     <EditText
         android:id="@+id/textCity"
         android:layout_width="0dp"
@@ -75,6 +90,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Search for Tickets"
         android:textSize="20sp"
         android:textStyle="bold"

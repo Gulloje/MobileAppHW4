@@ -35,37 +35,44 @@ class MainActivity : AppCompatActivity() {
         initRecyclerView()
     }
     private var seeMoreCounter = 0;
-    //tied to search button
+    // wanted to prevent changing the text field and then hitting seeMore causing the new loaded events to be that of the changed text field
+    private var previousCityName =""
+    private var previousKeyword = ""
     fun search(view: View) {
         eventList.clear()
+        previousCityName = findViewById<EditText>(R.id.textCity).text.toString()
+        previousKeyword = findViewById<EditText>(R.id.textKeyword).text.toString()
         seeMoreCounter = 0
-        loadTickets()
+        loadTickets(previousCityName, previousKeyword)
         view.hideKeyboard()
     }
     fun seeMore(view:View) {
         seeMoreCounter++
-        loadTickets()
+        loadTickets(previousCityName, previousKeyword)
 
     }
-    private fun loadTickets() {
+    private fun loadTickets(cityName: String, keyword: String) {
 
-        val cityName = findViewById<EditText>(R.id.textCity).text.toString()
-        val keyword = findViewById<EditText>(R.id.textKeyword).text.toString()
+
         if (keyword =="") {
             createDialog("Missing Keyword", "Enter a keyword to search for.")
         } else if (cityName =="") {
             createDialog("Missing City Name", "Please enter a city.")
         } else {
-            //COMEBACK TO FIGURE OUT PAGING
+
             eventAPI.getEventNameByCity(cityName, keyword, seeMoreCounter.toString(), apiKey).enqueue(object : Callback<TicketData?> {
                 override fun onResponse(call: Call<TicketData?>, response: Response<TicketData?>) {
                     if (response.body()?._embedded == null) {
-                        Toast.makeText(this@MainActivity, "No Events Found", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@MainActivity, "No Events Found", Toast.LENGTH_SHORT).show()
+                        findViewById<TextView>(R.id.noResultsTextView).visibility = View.VISIBLE
 
                     } else {
                         Log.d(TAG, "onResponse: ${response.body()}")
                         Log.d(TAG, "Name ${response.body()!!._embedded.events[0]}")
                         Log.d(TAG, "Body: ${response.body()}")
+
+                        findViewById<TextView>(R.id.noResultsTextView).visibility = View.GONE
+
                         eventList.addAll(response.body()!!._embedded.events)
                     }
                     adapter.notifyDataSetChanged()
@@ -91,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         adapter = RecyclerAdapter(this, eventList);
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-        //recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
     }
     private fun initRetrofit() : Retrofit {
         val retrofit = Retrofit.Builder().baseUrl(BASE_URL)

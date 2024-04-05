@@ -22,6 +22,7 @@ import kotlin.math.floor
 
 class RecyclerAdapter(private val context: Context, private val eventList: ArrayList<EventData>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>()
 {
+    //code for adding the see more button: https://stackoverflow.com/questions/29106484/how-to-add-a-button-at-the-end-of-recyclerview
     val TAG = "Recycler Adapter"
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val eventName = itemView.findViewById<TextView>(R.id.textEventName)
@@ -47,10 +48,12 @@ class RecyclerAdapter(private val context: Context, private val eventList: Array
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Log.d(TAG, "onBindViewHolder: $position")
+        //COMEBACK
         //if(position == eventList.size && eventList.size > 0) {
 
         //if(position == eventList.size && eventList.size > 0) {
             //holder.btnSeeMore.visibility = View.VISIBLE
+
         if (position == eventList.size) {
             // This is the "See more" button item
             if (eventList.size % 20 == 0 && eventList.size != 0) {
