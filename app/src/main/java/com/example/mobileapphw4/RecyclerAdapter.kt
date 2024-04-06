@@ -76,15 +76,14 @@ class RecyclerAdapter(private val context: Context, private val eventList: Array
                 var time12 = SimpleDateFormat("H:mm:ss").parse(time24)
                 var realTime = SimpleDateFormat("h:mm a").format(time12)
                 holder.date.text = "$stringDate at $realTime"
-            } catch (e: Exception) {
+            } catch (e: Exception) { //i had a date be null at one point
                 holder.date.text = "Date: N/A"
             }
 
 
             //address
             holder.eventLocation.text = "${curItem._embedded.venues[0].name}"
-            holder.address.text = "${curItem._embedded.venues[0].address.line1}, " +
-                    "${curItem._embedded.venues[0].city.name}, ${curItem._embedded.venues[0].state.stateCode}"
+            holder.address.text = "${curItem._embedded.venues[0].address.line1}, ${curItem._embedded.venues[0].city.name}, ${curItem._embedded.venues[0].state.stateCode}"
 
             //wanted to get rid of .0 and .5 and handle null
             try {
