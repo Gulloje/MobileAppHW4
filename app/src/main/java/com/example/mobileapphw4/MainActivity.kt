@@ -113,6 +113,14 @@ class MainActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    override fun onResume() {
+        super.onResume()
+        //want to hide the keyboard when they go back to it
+        //view = findViewById(android.R.id.content).getRootView().getWindowToken();  https://rmirabelle.medium.com/close-hide-the-soft-keyboard-in-android-db1da22b09d2
+        findViewById<View>(android.R.id.content).hideKeyboard()
+
+    }
+
 
 
 

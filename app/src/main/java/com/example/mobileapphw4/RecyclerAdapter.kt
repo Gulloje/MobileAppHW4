@@ -55,7 +55,7 @@ class RecyclerAdapter(private val context: Context, private val eventList: Array
             //holder.btnSeeMore.visibility = View.VISIBLE
 
         if (position == eventList.size) {
-            // This is the "See more" button item
+
             if (eventList.size % 20 == 0 && eventList.size != 0) {
                 holder.btnSeeMore.visibility = View.VISIBLE
             } else {
