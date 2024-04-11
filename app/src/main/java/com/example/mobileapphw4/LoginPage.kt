@@ -21,16 +21,18 @@ class LoginPage : AppCompatActivity() {
 
         val curUser = FirebaseAuth.getInstance().currentUser
         //continue if a user already exists
-        if (curUser == null) { //COMEBACK AND CHANGE TO != NULL
+        if (curUser != null) { //COMEBACK AND CHANGE TO != NULL
             val intent = Intent(this, MainActivity::class.java)
-            //startActivity(intent)
+            startActivity(intent)
             // Make sure to call finish(), otherwise the user would be able to go back to the RegisterActivity
-            //finish()
+            finish()
         } else {
             val signActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val user = FirebaseAuth.getInstance().currentUser
-
+                    if (user != null) {
+                        addUserToFirestore(user)
+                    }
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 } else {
@@ -63,7 +65,12 @@ class LoginPage : AppCompatActivity() {
 
     }
     private fun addUserToFirestore(user: FirebaseUser) {
-
+        val db = FirebaseFirestore.getInstance()
+        val userData = mapOf<String, Any>() //since i dont really care about also writing the uid as a field under the document with uid, just need an object to send to .set
+        db.collection("users").document(user.uid).set(userData)
+            .addOnFailureListener {
+                Log.d(TAG, "Error adding user.")
+            }
     }
 
 

@@ -41,6 +41,7 @@ class RecyclerAdapter(private val context: Context, private val eventList: Array
             R.layout.row_item -> LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
             else -> LayoutInflater.from(parent.context).inflate(R.layout.see_more_btn, parent, false)
         }
+        Log.d(TAG, "onCreateViewHolder: ")
         return ViewHolder(itemView)
     }
 
