@@ -19,6 +19,8 @@ class LoginPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_page)
 
+
+
         val curUser = FirebaseAuth.getInstance().currentUser
         //continue if a user already exists
         if (curUser != null) { //COMEBACK AND CHANGE TO != NULL

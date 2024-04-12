@@ -1,18 +1,22 @@
 package com.example.mobileapphw4
 
+import android.app.ActionBar
 import android.app.AlertDialog
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,12 +32,31 @@ class MainActivity : AppCompatActivity() {
     private  val eventList = ArrayList<EventData>()
     private val eventAPI = initRetrofit().create(EventDataService::class.java)
 
+    //navbar
+    lateinit var toggle: ActionBarDrawerToggle
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
+        //for the hamburger menu
+        var drawerLayout = findViewById<DrawerLayout>(R.id.drawerLayout)
+        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.menu_open, R.string.menu_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) //toggle button changes to back arrow
+        findViewById<NavigationView>(R.id.navView).setNavigationItemSelectedListener {
+            when(it.itemId) {
+                R.id.item1 -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
+                R.id.item1 -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
         initRecyclerView()
     }
+
     private var seeMoreCounter = 0;
     // wanted to prevent changing the text field and then hitting seeMore causing the new loaded events to be that of the changed text field
     private var previousCityName =""
@@ -118,6 +141,14 @@ class MainActivity : AppCompatActivity() {
         //want to hide the keyboard when they go back to it
         //view = findViewById(android.R.id.content).getRootView().getWindowToken();  https://rmirabelle.medium.com/close-hide-the-soft-keyboard-in-android-db1da22b09d2
         findViewById<View>(android.R.id.content).hideKeyboard()
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(toggle.onOptionsItemSelected(item)) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
 
     }
 
