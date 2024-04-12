@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        getSupportActionBar()?.setTitle("Some Cool Name");
 
 
         //for the hamburger menu
@@ -49,8 +49,8 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true) //toggle button changes to back arrow
         findViewById<NavigationView>(R.id.navView).setNavigationItemSelectedListener {
             when(it.itemId) {
-                R.id.item1 -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
-                R.id.item1 -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
+                R.id.signout -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
+
             }
             true
         }
