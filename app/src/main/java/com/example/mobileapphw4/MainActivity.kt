@@ -10,7 +10,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -38,7 +37,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //Set the title of the default navbar
         getSupportActionBar()?.setTitle("Some Cool Name");
+
 
 
         //for the hamburger menu
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true) //toggle button changes to back arrow
         findViewById<NavigationView>(R.id.navView).setNavigationItemSelectedListener {
             when(it.itemId) {
-                R.id.signout -> Toast.makeText(this, "clcikeditem", Toast.LENGTH_SHORT).show()
+                R.id.signout -> MenuButtonClicks(this).signOut()
 
             }
             true
